@@ -8,6 +8,7 @@ import { mapGatewayEvent, hasSubagentSession, registerSubagentByOrder, resetSuba
 import { registerHealthRoutes } from './routes/health.js';
 import { registerChatRoutes } from './routes/chat.js';
 import { registerSessionRoutes } from './routes/sessions.js';
+import { registerEventRoutes } from './routes/events.js';
 import { registerWebSocketHandler, broadcast } from './ws/handler.js';
 
 /** Track PM's current runId so we only reset sub-agent tracking on genuinely new runs. */
@@ -58,6 +59,7 @@ async function start(): Promise<void> {
   registerHealthRoutes(app);
   registerChatRoutes(app);
   registerSessionRoutes(app);
+  registerEventRoutes(app);
   registerWebSocketHandler(app);
 
   // Forward gateway events to frontend clients

@@ -8,6 +8,7 @@ export function registerHealthRoutes(app: FastifyInstance): void {
       status: 'ok',
       gateway: gatewayClient.isConnected ? 'connected' : 'disconnected',
       frontendClients: getClientCount(),
+      transportFallback: 'sse',
       timestamp: new Date().toISOString(),
     };
   });
