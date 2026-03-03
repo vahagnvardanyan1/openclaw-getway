@@ -19,5 +19,4 @@ export const config = {
     qa: process.env.QA_AGENT_ID || 'qa',
     user: 'user',
   },
-  taskDbPath: process.env.TASK_DB_PATH || resolve(process.cwd(), '..', 'data', 'tasks.sqlite'),
 } as const;

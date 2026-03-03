@@ -7,7 +7,6 @@ import { gatewayEvents, type GatewayEvent } from './gateway/events.js';
 import { mapGatewayEvent, hasSubagentSession, registerSubagentByOrder, resetSubagentSessions } from './gateway/event-mapper.js';
 import { registerHealthRoutes } from './routes/health.js';
 import { registerChatRoutes } from './routes/chat.js';
-import { registerTaskRoutes } from './routes/tasks.js';
 import { registerSessionRoutes } from './routes/sessions.js';
 import { registerWebSocketHandler, broadcast } from './ws/handler.js';
 
@@ -58,8 +57,7 @@ async function start(): Promise<void> {
   // Register routes
   registerHealthRoutes(app);
   registerChatRoutes(app);
-  registerTaskRoutes(app);
-  registerSessionRoutes(app);
+registerSessionRoutes(app);
   registerWebSocketHandler(app);
 
   // Forward gateway events to frontend clients
