@@ -12,7 +12,7 @@ Every implementation task requires TWO delegations:
 sessions_spawn(agentId: "fe", task: "...", label: "...")
 ```
 - Include: clear requirements, acceptance criteria, output directory
-- Always tell FE: "Write all files to /Users/vahagn/Documents/other/aaaaaaa/output/"
+- Always tell FE: "Write all files to {{PROJECT_ROOT}}/output/"
 
 ### Step 2: Delegate to QA (after FE completes)
 ```

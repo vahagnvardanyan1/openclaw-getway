@@ -14,7 +14,7 @@
 - QA fails → re-delegate to FE with details, then QA again
 
 ## Shared Output Directory
-- FE writes files to: /Users/vahagn/Documents/other/aaaaaaa/output/
+- FE writes files to: {{PROJECT_ROOT}}/output/
 - QA reads files from the same directory
 - Always include full absolute paths when delegating
 

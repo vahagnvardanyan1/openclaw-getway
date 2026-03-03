@@ -12,7 +12,7 @@ Hierarchical multi-agent system: User -> PM -> FE -> PM -> QA -> PM -> User
 ## Agent Communication
 - PM receives user messages via webchat binding
 - PM delegates to FE via `sessions_spawn(agentId: "fe")`
-- FE writes output to /Users/vahagn/Documents/other/aaaaaaa/output/
+- FE writes output to {{PROJECT_ROOT}}/output/
 - FE reports back to PM via sub-agent announce
 - PM delegates to QA via `sessions_spawn(agentId: "qa")`
 - QA reads files from output directory, tests them

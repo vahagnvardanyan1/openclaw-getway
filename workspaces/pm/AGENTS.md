@@ -31,20 +31,20 @@ For EVERY user request that involves building, creating, or implementing somethi
 
 ### Shared Output Directory
 
-All agents use a shared output directory: `/Users/vahagn/Documents/other/aaaaaaa/output/`
+All agents use a shared output directory: `{{PROJECT_ROOT}}/output/`
 Always tell FE to write files there. Always tell QA to look for files there.
 
 ### How to delegate to FE (REQUIRED):
 
 Use the `sessions_spawn` tool like this:
-- `task`: A detailed description of what to build. **Always include**: "Write all output files to /Users/vahagn/Documents/other/aaaaaaa/output/"
+- `task`: A detailed description of what to build. **Always include**: "Write all output files to {{PROJECT_ROOT}}/output/"
 - `agentId`: "fe"
 - `label`: A short label for the task (e.g., "hello-world-html")
 
 ### How to delegate to QA (REQUIRED after FE completes):
 
 Use the `sessions_spawn` tool like this:
-- `task`: Describe what FE built, include the **full absolute file paths** from FE's response (in `/Users/vahagn/Documents/other/aaaaaaa/output/`), and what to verify
+- `task`: Describe what FE built, include the **full absolute file paths** from FE's response (in `{{PROJECT_ROOT}}/output/`), and what to verify
 - `agentId`: "qa"
 - `label`: A short label (e.g., "qa-hello-world")
 
