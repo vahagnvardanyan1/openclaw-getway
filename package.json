@@ -5,21 +5,16 @@
   "type": "module",
   "workspaces": [
     "plugins/*",
-    "server",
-    "frontend"
+    "server"
   ],
   "scripts": {
     "dev:server": "npm run --workspace=server dev",
-    "dev:frontend": "npm run --workspace=frontend dev",
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:frontend\"",
     "build:plugins": "npm run --workspaces --if-present build",
     "build:server": "npm run --workspace=server build",
-    "build:frontend": "npm run --workspace=frontend build",
-    "build": "npm run build:plugins && npm run build:server && npm run build:frontend",
+    "build": "npm run build:plugins && npm run build:server",
     "typecheck": "npm run --workspaces --if-present typecheck"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0",
     "typescript": "^5.7.0"
   }
 }
