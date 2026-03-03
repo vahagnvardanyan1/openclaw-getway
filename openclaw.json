@@ -21,37 +21,34 @@
     "pm": {
       "name": "Product Manager",
       "workspace": "./workspaces/pm",
-      "description": "Senior PM who NEVER writes code. Always uses task-manager:create-task then agent-send to delegate ALL implementation work to the FE agent.",
+      "description": "Senior PM who delegates implementation to FE via sessions_spawn, then delegates testing to QA. Never writes code.",
       "tools": {
-        "allow": [
-          "task-manager:create-task",
-          "task-manager:update-task",
-          "task-manager:list-tasks",
-          "task-manager:complete-task",
-          "agent-send",
-          "memory_search"
-        ]
+        "profile": "coding"
       },
-      "agentComm": {
-        "canMessageAgents": ["fe"],
-        "canReceiveFrom": ["fe"]
+      "subagents": {
+        "allowAgents": ["fe", "qa"]
       }
     },
     "fe": {
       "name": "Frontend Engineer",
       "workspace": "./workspaces/fe",
-      "description": "Senior FE engineer who implements tasks assigned by the PM agent",
+      "description": "Senior FE engineer who implements tasks assigned by the PM agent. Writes all output to the shared output/ directory.",
       "tools": {
-        "allow": [
-          "task-manager:update-task",
-          "task-manager:list-tasks",
-          "agent-send",
-          "memory_search"
-        ]
+        "profile": "coding"
       },
-      "agentComm": {
-        "canMessageAgents": ["pm"],
-        "canReceiveFrom": ["pm"]
+      "subagents": {
+        "allowAgents": []
+      }
+    },
+    "qa": {
+      "name": "QA Engineer",
+      "workspace": "./workspaces/qa",
+      "description": "Senior QA engineer who tests FE's work. Reads files from the shared output/ directory and reports PASS/FAIL.",
+      "tools": {
+        "profile": "coding"
+      },
+      "subagents": {
+        "allowAgents": []
       }
     }
   },
