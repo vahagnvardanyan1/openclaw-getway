@@ -7,9 +7,7 @@ import { gatewayEvents, type GatewayEvent } from './gateway/events.js';
 import { mapGatewayEvent, hasSubagentSession, registerSubagentByOrder, resetSubagentSessions } from './gateway/event-mapper.js';
 import { registerHealthRoutes } from './routes/health.js';
 import { registerChatRoutes } from './routes/chat.js';
-import { registerTaskRoutes } from './routes/tasks.js';
 import { registerSessionRoutes } from './routes/sessions.js';
-import { registerConfigRoutes } from './routes/config.js';
 import { registerWebSocketHandler, broadcast } from './ws/handler.js';
 
 /** Track PM's current runId so we only reset sub-agent tracking on genuinely new runs. */
@@ -48,20 +46,18 @@ function processEvent(event: GatewayEvent): void {
   }
 }
 
-export async function start(): Promise<void> {
+async function start(): Promise<void> {
   const app = Fastify({ logger: true });
 
   await app.register(cors, {
-    origin: ['http://localhost:5173', 'http://localhost:3000', /\.vercel\.app$/],
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
   });
   await app.register(websocket);
 
   // Register routes
   registerHealthRoutes(app);
   registerChatRoutes(app);
-  registerTaskRoutes(app);
   registerSessionRoutes(app);
-  registerConfigRoutes(app);
   registerWebSocketHandler(app);
 
   // Forward gateway events to frontend clients
@@ -82,7 +78,7 @@ export async function start(): Promise<void> {
   console.log(`[Bridge] Server listening on http://${config.host}:${config.port}`);
 }
 
-const server = start().catch((err) => {
+start().catch((err) => {
   console.error('[Bridge] Fatal error:', err);
   process.exit(1);
 });

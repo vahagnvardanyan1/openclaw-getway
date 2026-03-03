@@ -60,11 +60,7 @@
     }
   },
   "plugins": [
-    {
-      "name": "task-manager",
-      "path": "./plugins/task-manager"
-    },
-    {
+{
       "name": "hierarchy-guard",
       "path": "./plugins/hierarchy-guard"
     }

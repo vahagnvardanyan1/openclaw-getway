@@ -1,4 +1,0 @@
-packages:
-  - "plugins/*"
-  - "server"
-  - "frontend"

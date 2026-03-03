@@ -3,25 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "plugins/*",
+    "server"
+  ],
   "scripts": {
-    "dev:server": "pnpm --filter server dev",
-    "dev:frontend": "pnpm --filter frontend dev",
-    "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:frontend\"",
-    "build:plugins": "pnpm --filter './plugins/*' build",
-    "build:server": "pnpm --filter server build",
-    "build:frontend": "pnpm --filter frontend build",
-    "build": "pnpm build:plugins && pnpm build:server && pnpm build:frontend",
-    "typecheck": "pnpm -r typecheck"
+    "dev:server": "npm run --workspace=server dev",
+    "build:plugins": "npm run --workspaces --if-present build",
+    "build:server": "npm run --workspace=server build",
+    "build": "npm run build:plugins && npm run build:server",
+    "typecheck": "npm run --workspaces --if-present typecheck"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0",
     "typescript": "^5.7.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "esbuild"
-    ]
-  },
-  "packageManager": "pnpm@9.15.4+sha256.9bee59c7313a216722c079c1e22160dea7f88df4e0c3450b1d7b01b882336c6a"
+  }
 }
