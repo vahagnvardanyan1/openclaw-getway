@@ -16,6 +16,7 @@ export const config = {
   agents: {
     pm: process.env.PM_AGENT_ID || 'pm',
     fe: process.env.FE_AGENT_ID || 'fe',
+    qa: process.env.QA_AGENT_ID || 'qa',
     user: 'user',
   },
   taskDbPath: process.env.TASK_DB_PATH || resolve(process.cwd(), '..', 'data', 'tasks.sqlite'),

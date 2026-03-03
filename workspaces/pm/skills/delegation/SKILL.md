@@ -1,34 +1,32 @@
 # Delegation Skill
 
 ## How to Delegate
-Use `agent-send` to send structured task assignments to the FE agent.
+Use `sessions_spawn` to delegate tasks to sub-agents.
 
-## Message Format
-Always include:
-1. Task ID (from task-manager)
-2. Clear requirements list
-3. Acceptance criteria
-4. Any relevant context or constraints
+## Two-Step Delegation (MANDATORY)
+
+Every implementation task requires TWO delegations:
+
+### Step 1: Delegate to FE
+```
+sessions_spawn(agentId: "fe", task: "...", label: "...")
+```
+- Include: clear requirements, acceptance criteria, output directory
+- Always tell FE: "Write all files to /Users/vahagn/Documents/other/aaaaaaa/output/"
+
+### Step 2: Delegate to QA (after FE completes)
+```
+sessions_spawn(agentId: "qa", task: "...", label: "...")
+```
+- Include: what FE built, full file paths, what to verify
+- Wait for QA's PASS/FAIL report
 
 ## Follow-up Protocol
-1. After delegating, wait for the FE agent's response
-2. Review the response against acceptance criteria
-3. If criteria not met, provide specific feedback and re-delegate
-4. Maximum 3 revision rounds before escalating to user
-5. Once satisfied, mark the task complete and report to user
+1. After delegating to FE, wait for FE's response
+2. When FE responds, IMMEDIATELY delegate to QA — do NOT report to user yet
+3. Wait for QA's PASS/FAIL report
+4. If QA reports FAIL: re-delegate to FE with QA's feedback, then re-test with QA
+5. If QA reports PASS: report combined results to user
+6. Maximum 3 revision rounds before escalating to user
 
-## Example Delegation
-```
-agent-send to "fe":
-TASK: Implement login form component
-ID: task-123
-REQUIREMENTS:
-- Email and password fields with validation
-- Submit button with loading state
-- Error message display
-ACCEPTANCE CRITERIA:
-- Form validates email format
-- Password minimum 8 characters
-- Shows loading spinner during submission
-- Displays API errors to user
-```
+**NEVER skip QA. NEVER report to user before QA verification.**

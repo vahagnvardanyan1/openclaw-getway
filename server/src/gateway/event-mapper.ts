@@ -19,6 +19,70 @@ export interface FrontendEvent {
   data: Record<string, unknown>;
 }
 
+/**
+ * Map of sub-agent sessionKey → frontend agentId (e.g. 'fe' or 'qa').
+ * Populated by the bridge server when it detects new sub-agent sessions
+ * via sessions.list lookup.
+ */
+const subagentSessionMap = new Map<string, string>();
+
+/** Order in which PM spawns sub-agents: fe first, qa second. */
+const SUBAGENT_ORDER = ['fe', 'qa'];
+
+/** Counter for sub-agent spawn order within a PM run. */
+let subagentCounter = 0;
+
+/**
+ * Register a sub-agent session by spawn order.
+ * PM always spawns FE first, then QA.
+ */
+export function registerSubagentByOrder(sessionKey: string): void {
+  const agentId = SUBAGENT_ORDER[subagentCounter % SUBAGENT_ORDER.length] ?? 'fe';
+  console.log('[EventMapper] Registering sub-agent by order: %s → %s (counter=%d)', sessionKey, agentId, subagentCounter);
+  subagentCounter++;
+  subagentSessionMap.set(sessionKey, agentId);
+}
+
+/** Check if a sub-agent session is already registered. */
+export function hasSubagentSession(sessionKey: string): boolean {
+  return subagentSessionMap.has(sessionKey);
+}
+
+/**
+ * Reset sub-agent session tracking (call when a new PM run starts).
+ * Only call this when the PM's runId actually changes.
+ */
+export function resetSubagentSessions(): void {
+  console.log('[EventMapper] Resetting sub-agent sessions (had %d)', subagentSessionMap.size);
+  subagentSessionMap.clear();
+  subagentCounter = 0;
+}
+
+/**
+ * Resolve the frontend-facing agentId from a gateway event payload.
+ *
+ * The gateway always reports `agent=main` (the PM's config id), even for
+ * sub-agent runs.  Sub-agent runs are distinguishable by the sessionKey
+ * which starts with "subagent:" (e.g. "subagent:3f13b47c-…").
+ */
+function resolveAgentId(payload: Record<string, unknown>): string {
+  const sessionKey = (payload.sessionKey ?? '') as string;
+
+  // Sub-agent sessions → look up registered agent, default to 'fe'
+  if (sessionKey.includes('subagent:')) {
+    return subagentSessionMap.get(sessionKey) ?? 'fe';
+  }
+
+  // Map the gateway config id ("main") to the frontend id ("pm")
+  const rawId = (payload.agentId ?? payload.agent ?? '') as string;
+  if (rawId === 'main' || rawId === 'pm') return 'pm';
+  if (rawId === 'fe') return 'fe';
+  if (rawId === 'qa') return 'qa';
+
+  // Default: treat as PM (webchat sessions always belong to the default agent)
+  return 'pm';
+}
+
 /** Extract plain text from OpenClaw message content (array of {type, text} blocks). */
 function extractTextContent(content: unknown): string {
   if (typeof content === 'string') return content;
@@ -54,8 +118,7 @@ function mapAgentEvent(payload: Record<string, unknown>): FrontendEvent[] {
   const stream = payload.stream as string | undefined;
   const data = (payload.data ?? {}) as Record<string, unknown>;
   const sessionKey = payload.sessionKey as string | undefined;
-  // Try to extract agentId from the sessionKey or payload
-  const agentId = (payload.agentId ?? '') as string;
+  const agentId = resolveAgentId(payload);
 
   if (stream === 'lifecycle') {
     const phase = data.phase as string | undefined;
@@ -123,7 +186,7 @@ function mapChatEvent(payload: Record<string, unknown>): FrontendEvent[] {
 
   const role = (message.role ?? 'assistant') as string;
   const content = extractTextContent(message.content);
-  const agentId = (message.agentId ?? payload.agentId ?? '') as string;
+  const agentId = resolveAgentId(payload);
   const ts = message.timestamp as number | string | undefined;
   const timestamp = typeof ts === 'number' ? new Date(ts).toISOString() : (ts ?? new Date().toISOString());
 
@@ -136,7 +199,7 @@ function mapChatEvent(payload: Record<string, unknown>): FrontendEvent[] {
         role,
         content,
         agentId,
-        agentName: agentId === 'pm' ? 'Product Manager' : agentId === 'fe' ? 'Frontend Engineer' : agentId || 'Agent',
+        agentName: agentId === 'pm' ? 'Product Manager' : agentId === 'fe' ? 'Frontend Engineer' : agentId === 'qa' ? 'QA Engineer' : agentId || 'Agent',
         timestamp,
         sessionKey,
       },

@@ -3,11 +3,13 @@ import type { AgentId } from '../../types/agent';
 const AGENT_LABELS: Record<AgentId, string> = {
   pm: 'Product Manager',
   fe: 'Frontend Engineer',
+  qa: 'QA Engineer',
 };
 
 const AGENT_COLORS: Record<AgentId, string> = {
   pm: 'var(--color-pm)',
   fe: 'var(--color-fe)',
+  qa: 'var(--color-qa)',
 };
 
 interface Props {

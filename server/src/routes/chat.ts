@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { gatewayClient } from '../gateway/client.js';
 import { validateHierarchy } from '../gateway/hierarchy.js';
 
+
 export function registerChatRoutes(app: FastifyInstance): void {
   app.post<{
     Body: { session_id: string; message: string };

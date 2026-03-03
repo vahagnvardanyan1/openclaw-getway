@@ -1,19 +1,25 @@
 import { create } from 'zustand';
 import type { ChatMessage, ChatSession } from '../types/chat';
-import type { AgentId } from '../types/agent';
+import type { AgentId, AgentInfo } from '../types/agent';
+
+const DEFAULT_AGENTS: Record<AgentId, AgentInfo> = {
+  pm: { id: 'pm', name: 'Product Manager', status: 'idle' },
+  fe: { id: 'fe', name: 'Frontend Engineer', status: 'idle' },
+  qa: { id: 'qa', name: 'QA Engineer', status: 'idle' },
+};
 
 interface ChatState {
   messages: ChatMessage[];
   sessions: ChatSession[];
   activeSessionId: string | null;
-  activeAgent: AgentId | null;
+  agents: Record<AgentId, AgentInfo>;
   isStreaming: boolean;
   streamingContent: string;
 
   addMessage: (message: ChatMessage) => void;
   updateStreamingContent: (content: string) => void;
   setStreaming: (streaming: boolean) => void;
-  setActiveAgent: (agent: AgentId | null) => void;
+  updateAgentStatus: (agentId: AgentId, status: AgentInfo['status']) => void;
   setActiveSession: (sessionId: string) => void;
   setSessions: (sessions: ChatSession[]) => void;
   setMessages: (messages: ChatMessage[]) => void;
@@ -24,7 +30,7 @@ export const useChatStore = create<ChatState>()((set) => ({
   messages: [],
   sessions: [],
   activeSessionId: null,
-  activeAgent: null,
+  agents: { ...DEFAULT_AGENTS },
   isStreaming: false,
   streamingContent: '',
 
@@ -40,8 +46,13 @@ export const useChatStore = create<ChatState>()((set) => ({
       ...(streaming ? {} : { streamingContent: '' }),
     }),
 
-  setActiveAgent: (agent) =>
-    set({ activeAgent: agent }),
+  updateAgentStatus: (agentId, status) =>
+    set((state) => ({
+      agents: {
+        ...state.agents,
+        [agentId]: { ...state.agents[agentId], status },
+      },
+    })),
 
   setActiveSession: (sessionId) =>
     set({ activeSessionId: sessionId }),

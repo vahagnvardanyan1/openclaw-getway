@@ -21,7 +21,7 @@
     "pm": {
       "name": "Product Manager",
       "workspace": "./workspaces/pm",
-      "description": "Senior PM who analyzes user requests, creates tasks, and delegates to the FE agent",
+      "description": "Senior PM who NEVER writes code. Always uses task-manager:create-task then agent-send to delegate ALL implementation work to the FE agent.",
       "tools": {
         "allow": [
           "task-manager:create-task",

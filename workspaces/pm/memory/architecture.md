@@ -1,7 +1,7 @@
 # System Architecture
 
 ## Overview
-Hierarchical multi-agent system: User -> PM -> FE -> PM -> User
+Hierarchical multi-agent system: User -> PM -> FE -> PM -> QA -> PM -> User
 
 ## Components
 - **OpenClaw Gateway** (port 18789): Agent lifecycle, communication, memory
@@ -11,7 +11,11 @@ Hierarchical multi-agent system: User -> PM -> FE -> PM -> User
 
 ## Agent Communication
 - PM receives user messages via webchat binding
-- PM delegates to FE via agent-send
-- FE reports back to PM via agent-send
-- PM responds to user with results
-- FE never communicates with user directly
+- PM delegates to FE via `sessions_spawn(agentId: "fe")`
+- FE writes output to /Users/vahagn/Documents/other/aaaaaaa/output/
+- FE reports back to PM via sub-agent announce
+- PM delegates to QA via `sessions_spawn(agentId: "qa")`
+- QA reads files from output directory, tests them
+- QA reports PASS/FAIL back to PM via sub-agent announce
+- PM responds to user with combined results
+- Neither FE nor QA communicate with user directly

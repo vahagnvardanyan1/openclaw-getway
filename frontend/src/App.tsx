@@ -13,7 +13,7 @@ export function App() {
   const addMessage = useChatStore((s) => s.addMessage);
   const setStreaming = useChatStore((s) => s.setStreaming);
   const updateStreamingContent = useChatStore((s) => s.updateStreamingContent);
-  const setActiveAgent = useChatStore((s) => s.setActiveAgent);
+  const updateAgentStatus = useChatStore((s) => s.updateAgentStatus);
   const addTask = useTaskStore((s) => s.addTask);
   const updateTask = useTaskStore((s) => s.updateTask);
   const setConnectionStatus = useUiStore((s) => s.setConnectionStatus);
@@ -44,19 +44,33 @@ export function App() {
           addMessage(event.data as unknown as ChatMessage);
           setStreaming(false);
           break;
-        case 'chat.stream.start':
+        case 'chat.stream.start': {
           setStreaming(true);
-          setActiveAgent((event.data as { agentId?: AgentId }).agentId ?? null);
+          const startAgentId = (event.data as { agentId?: AgentId }).agentId;
+          if (startAgentId) updateAgentStatus(startAgentId, 'responding');
           break;
+        }
         case 'chat.stream.chunk':
           updateStreamingContent(
             (event.data as { content?: string }).content ?? ''
           );
           break;
-        case 'chat.stream.end':
-          setStreaming(false);
-          setActiveAgent(null);
+        case 'chat.stream.end': {
+          const endAgentId = (event.data as { agentId?: AgentId }).agentId;
+          if (endAgentId) {
+            updateAgentStatus(endAgentId, 'idle');
+          } else {
+            // Fallback: reset all
+            updateAgentStatus('pm', 'idle');
+            updateAgentStatus('fe', 'idle');
+            updateAgentStatus('qa', 'idle');
+          }
+          // Only stop the streaming indicator when PM finishes (PM is the user-facing agent)
+          if (!endAgentId || endAgentId === 'pm') {
+            setStreaming(false);
+          }
           break;
+        }
         case 'task.created':
           addTask(event.data as unknown as Task);
           break;
@@ -64,13 +78,16 @@ export function App() {
         case 'task.completed':
           updateTask(event.data as unknown as Task);
           break;
-        case 'agent.status':
-          setActiveAgent(
-            (event.data as { status?: string }).status === 'idle'
-              ? null
-              : ((event.data as { agentId?: AgentId }).agentId ?? null)
-          );
+        case 'agent.status': {
+          const statusData = event.data as { agentId?: AgentId; status?: string };
+          if (statusData.agentId) {
+            const mapped: 'idle' | 'thinking' | 'responding' =
+              statusData.status === 'thinking' ? 'thinking' :
+              statusData.status === 'responding' ? 'responding' : 'idle';
+            updateAgentStatus(statusData.agentId, mapped);
+          }
           break;
+        }
       }
     });
 
@@ -82,7 +99,7 @@ export function App() {
     addMessage,
     setStreaming,
     updateStreamingContent,
-    setActiveAgent,
+    updateAgentStatus,
     addTask,
     updateTask,
     setConnectionStatus,

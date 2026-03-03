@@ -1,4 +1,4 @@
-export type AgentId = 'pm' | 'fe';
+export type AgentId = 'pm' | 'fe' | 'qa';
 
 export interface AgentInfo {
   id: AgentId;

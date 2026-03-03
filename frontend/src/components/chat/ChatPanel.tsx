@@ -1,5 +1,6 @@
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
+import { AgentTeamBar } from './AgentTeamBar';
 
 export function ChatPanel() {
   return (
@@ -7,6 +8,7 @@ export function ChatPanel() {
       <div className="panel-header">
         <h2>Chat</h2>
       </div>
+      <AgentTeamBar />
       <MessageList />
       <ChatInput />
     </div>

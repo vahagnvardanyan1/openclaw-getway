@@ -15,6 +15,7 @@
     "better-sqlite3": "^11.7.0",
     "dotenv": "^16.4.0",
     "fastify": "^5.2.0",
+    "openclaw": "^2026.3.2",
     "ws": "^8.18.0"
   },
   "devDependencies": {

@@ -36,7 +36,7 @@ export function TaskDetail() {
           <PriorityBadge priority={task.priority} />
           {task.assignee && (
             <span className="task-assignee-detail">
-              Assigned to: {task.assignee === 'fe' ? 'FE Engineer' : 'PM'}
+              Assigned to: {task.assignee === 'fe' ? 'FE Engineer' : task.assignee === 'qa' ? 'QA Engineer' : 'PM'}
             </span>
           )}
         </div>

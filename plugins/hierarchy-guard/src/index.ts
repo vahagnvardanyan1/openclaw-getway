@@ -16,8 +16,9 @@ type GatewayMethodHandler = (params: Record<string, unknown>) => Promise<unknown
 
 // Define allowed communication paths
 const ALLOWED_PATHS: Record<string, string[]> = {
-  pm: ['fe', 'user'],
+  pm: ['fe', 'qa', 'user'],
   fe: ['pm'],
+  qa: ['pm'],
   user: ['pm'],
 };
 
@@ -53,7 +54,7 @@ export default function register(ctx: PluginContext): void {
       to,
       reason: allowed
         ? `Communication from ${from} to ${to} is permitted`
-        : `Communication from ${from} to ${to} is NOT permitted. Hierarchy: User <-> PM <-> FE`,
+        : `Communication from ${from} to ${to} is NOT permitted. Hierarchy: User <-> PM <-> FE/QA`,
     };
   });
 }
