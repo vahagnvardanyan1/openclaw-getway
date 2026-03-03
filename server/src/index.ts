@@ -57,7 +57,7 @@ async function start(): Promise<void> {
   // Register routes
   registerHealthRoutes(app);
   registerChatRoutes(app);
-registerSessionRoutes(app);
+  registerSessionRoutes(app);
   registerWebSocketHandler(app);
 
   // Forward gateway events to frontend clients

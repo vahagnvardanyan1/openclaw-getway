@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
-import { resolve } from 'node:path';
+import { resolve, join } from 'node:path';
+import { homedir, tmpdir } from 'node:os';
 
 // Load .env from project root (parent of server/)
 dotenv.config({ path: resolve(process.cwd(), '..', '.env') });
@@ -19,4 +20,10 @@ export const config = {
     qa: process.env.QA_AGENT_ID || 'qa',
     user: 'user',
   },
+  // On Vercel, the filesystem is often read-only except for /tmp.
+  // For local, we use the relative path from project root or server.
+  taskDbPath: process.env.TASK_DB_PATH || 
+    (process.env.VERCEL ? '/tmp/tasks.sqlite' : resolve(process.cwd(), '..', 'data', 'tasks.sqlite')),
+  identityDir: process.env.OPENCLAW_IDENTITY_DIR || 
+    (process.env.VERCEL ? join(tmpdir(), '.openclaw', 'bridge-server') : join(homedir(), '.openclaw', 'bridge-server')),
 } as const;
