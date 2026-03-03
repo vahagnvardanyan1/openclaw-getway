@@ -1,0 +1,12 @@
+{
+  "name": "hierarchy-guard",
+  "version": "1.0.0",
+  "description": "Enforces hierarchical communication rules between agents",
+  "entry": "dist/index.js",
+  "gatewayMethods": [
+    {
+      "name": "validate-hierarchy",
+      "description": "Validates that agent communication follows hierarchy rules"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "task-manager",
+  "version": "1.0.0",
+  "description": "Task CRUD tools with SQLite persistence for agent task management",
+  "entry": "dist/index.js",
+  "tools": [
+    {
+      "name": "create-task",
+      "description": "Create a new task with title, description, priority, and assignee"
+    },
+    {
+      "name": "update-task",
+      "description": "Update an existing task's status, description, or assignee"
+    },
+    {
+      "name": "list-tasks",
+      "description": "List tasks with optional filters by status, assignee, or priority"
+    },
+    {
+      "name": "complete-task",
+      "description": "Mark a task as completed with an optional summary"
+    }
+  ]
+}

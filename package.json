@@ -1,0 +1,26 @@
+{
+  "name": "openclaw-multi-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:server": "pnpm --filter server dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:frontend\"",
+    "build:plugins": "pnpm --filter './plugins/*' build",
+    "build:server": "pnpm --filter server build",
+    "build:frontend": "pnpm --filter frontend build",
+    "build": "pnpm build:plugins && pnpm build:server && pnpm build:frontend",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild"
+    ]
+  }
+}

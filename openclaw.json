@@ -1,0 +1,86 @@
+{
+  "$schema": "https://openclaw.dev/schemas/config.json",
+  "version": "1.0",
+  "project": {
+    "name": "multi-agent-system",
+    "description": "Hierarchical multi-agent system with PM and FE agents"
+  },
+  "gateway": {
+    "port": 18789,
+    "auth": {
+      "type": "token",
+      "token": "${OPENCLAW_GATEWAY_TOKEN}"
+    }
+  },
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "apiKey": "${OPENAI_API_KEY}"
+  },
+  "agents": {
+    "pm": {
+      "name": "Product Manager",
+      "workspace": "./workspaces/pm",
+      "description": "Senior PM who analyzes user requests, creates tasks, and delegates to the FE agent",
+      "tools": {
+        "allow": [
+          "task-manager:create-task",
+          "task-manager:update-task",
+          "task-manager:list-tasks",
+          "task-manager:complete-task",
+          "agent-send",
+          "memory_search"
+        ]
+      },
+      "agentComm": {
+        "canMessageAgents": ["fe"],
+        "canReceiveFrom": ["fe"]
+      }
+    },
+    "fe": {
+      "name": "Frontend Engineer",
+      "workspace": "./workspaces/fe",
+      "description": "Senior FE engineer who implements tasks assigned by the PM agent",
+      "tools": {
+        "allow": [
+          "task-manager:update-task",
+          "task-manager:list-tasks",
+          "agent-send",
+          "memory_search"
+        ]
+      },
+      "agentComm": {
+        "canMessageAgents": ["pm"],
+        "canReceiveFrom": ["pm"]
+      }
+    }
+  },
+  "bindings": {
+    "webchat": {
+      "type": "webchat",
+      "agent": "pm",
+      "description": "User-facing chat bound to PM agent"
+    }
+  },
+  "plugins": [
+    {
+      "name": "task-manager",
+      "path": "./plugins/task-manager"
+    },
+    {
+      "name": "hierarchy-guard",
+      "path": "./plugins/hierarchy-guard"
+    }
+  ],
+  "workflows": {
+    "directory": "./workflows"
+  },
+  "memory": {
+    "enabled": true,
+    "provider": "sqlite",
+    "embeddings": {
+      "provider": "openai",
+      "model": "text-embedding-3-small"
+    }
+  }
+}
