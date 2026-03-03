@@ -43,7 +43,7 @@
     "qa": {
       "name": "QA Engineer",
       "workspace": "./workspaces/qa",
-      "description": "Senior QA engineer who tests FE's work. Reads files from the shared output/ directory and reports PASS/FAIL.",
+      "description": "Staff Senior QA Engineer who performs comprehensive testing (functional, security, accessibility, performance, code quality, standards) on FE's work. Delivers structured severity-rated reports with actionable findings.",
       "tools": {
         "profile": "coding"
       },
