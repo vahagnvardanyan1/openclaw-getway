@@ -9,6 +9,7 @@ import { registerHealthRoutes } from './routes/health.js';
 import { registerChatRoutes } from './routes/chat.js';
 import { registerTaskRoutes } from './routes/tasks.js';
 import { registerSessionRoutes } from './routes/sessions.js';
+import { registerConfigRoutes } from './routes/config.js';
 import { registerWebSocketHandler, broadcast } from './ws/handler.js';
 
 /** Track PM's current runId so we only reset sub-agent tracking on genuinely new runs. */
@@ -47,11 +48,11 @@ function processEvent(event: GatewayEvent): void {
   }
 }
 
-async function start(): Promise<void> {
+export async function start(): Promise<void> {
   const app = Fastify({ logger: true });
 
   await app.register(cors, {
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: ['http://localhost:5173', 'http://localhost:3000', /\.vercel\.app$/],
   });
   await app.register(websocket);
 
@@ -60,6 +61,7 @@ async function start(): Promise<void> {
   registerChatRoutes(app);
   registerTaskRoutes(app);
   registerSessionRoutes(app);
+  registerConfigRoutes(app);
   registerWebSocketHandler(app);
 
   // Forward gateway events to frontend clients
@@ -80,7 +82,7 @@ async function start(): Promise<void> {
   console.log(`[Bridge] Server listening on http://${config.host}:${config.port}`);
 }
 
-start().catch((err) => {
+const server = start().catch((err) => {
   console.error('[Bridge] Fatal error:', err);
   process.exit(1);
 });

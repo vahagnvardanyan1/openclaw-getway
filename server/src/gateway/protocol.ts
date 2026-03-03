@@ -14,7 +14,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import os from 'node:os';
+import { config } from '../config.js';
 
 // ── Frame types ──────────────────────────────────────────────
 
@@ -95,7 +95,7 @@ function generateIdentity(): DeviceIdentity {
   };
 }
 
-const IDENTITY_DIR = path.join(os.homedir(), '.openclaw', 'bridge-server');
+const IDENTITY_DIR = config.identityDir;
 const IDENTITY_FILE = path.join(IDENTITY_DIR, 'device-identity.json');
 
 function loadOrCreateDeviceIdentity(): DeviceIdentity {
