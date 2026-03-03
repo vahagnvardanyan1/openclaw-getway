@@ -23,7 +23,7 @@
       "workspace": "./workspaces/pm",
       "description": "Senior PM who delegates implementation to FE via sessions_spawn, then delegates testing to QA. Never writes code.",
       "tools": {
-        "profile": "coding"
+        "profile": "messaging"
       },
       "subagents": {
         "allowAgents": ["fe", "qa"]
